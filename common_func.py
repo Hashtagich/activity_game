@@ -47,12 +47,17 @@ def create_iter_words_list(path_file):
 
 
 def create_line(string: str, num: int = 24) -> str:
-    """Функция получает строку, преобразовывает её в список, делает первое слово с заглавной буквой.
-    Возвращает преобразованную строку"""
+    """Функция получает строку, преобразовывает её в список, делает первое слово с заглавной буквой и переносит слова
+    на новую строку если они превышают кол-во эл-тов в строке."""
     list_string = string.split()
     new_string = f'{list_string[0].capitalize()} {" ".join(list_string[1:])}'
-    # return new_string
-    return f'{new_string[0:num]}\n{new_string[num:]}' if len(new_string) > num else new_string
+    mult = 1
+    while len(new_string) > num:
+        index_end_spase = new_string[:num].rfind(' ')
+        new_string = f"{new_string[:index_end_spase]}\n{new_string[index_end_spase + 1:]}"
+        mult += 1
+        num *= mult
+    return new_string
 
 
 # words = cycle(create_iter_words_list(path_file_all_words))
