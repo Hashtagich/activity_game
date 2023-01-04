@@ -1,10 +1,7 @@
 from math import floor
 from random import choice, randint
-from tkinter import *
-from tkinter import Toplevel
 from tkinter import colorchooser
 from tkinter import messagebox
-from tkinter import ttk
 
 from all_setting_game import *
 from common_func import *
@@ -565,17 +562,20 @@ class GamesWindow:
         except (IndexError, KeyError):
             messagebox.showwarning("Предупреждение", "Выберете номер команды")
 
-    def select_name_team(self, key_dict):
+    def select_name_team(self, key_dict, num: int = 24):
         """Функция для изменения названия выбранной команды в окне настроек.
-        Название команды не должно превышать 26 символов!
+        Если название команды превышает num символов, запускается цикл переноса слова!
         Названию берётся из поля, которое должно быть заполнено иначе название будет пустым.
         Также данное название заносится в словарь названий для запоминания
         на момент работы игры. При новом пуске словарь будет со значения по умолчанию"""
         new_name_team = self.entry_name_team.get()
-        if len(new_name_team) > 24:
-            new_name_team = f'{new_name_team[:24]}-\n{new_name_team[24:]}'
-            if len(new_name_team) > 50:
-                new_name_team = f'{new_name_team[:50]}-\n{new_name_team[50:]}'
+        mult = 1
+        while len(new_name_team) > num:
+            ind_end_space = new_name_team[:num].rfind(' ')
+            new_name_team = f'{new_name_team[:ind_end_space]}\n{new_name_team[ind_end_space + 1:]}'
+            mult += 1
+            num *= mult
+
         self.name_team[key_dict] = new_name_team
         self.canvas_fig.itemconfig(self.poly_dict_set[key_dict][1], text=new_name_team)
         self.canvas_map.itemconfig(self.poly_dict[key_dict][1], text=new_name_team)
