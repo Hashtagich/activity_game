@@ -128,3 +128,4 @@ NAME_SOUND_TIME_CONTINUE = f'{directory_sounds}moody blues.mp3'
 NAME_SOUND_TIME_UP = f'{directory_sounds}время деньги.mp3'
 NAME_SOUND_ALL = f'{directory_sounds}все сюда.mp3'
 NAME_SOUND_END = f'{directory_sounds}moody blues.mp3'
+
