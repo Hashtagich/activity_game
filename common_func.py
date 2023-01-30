@@ -4,7 +4,8 @@ from tkinter import *
 from tkinter import ttk
 
 from all_setting_game import path_file_rules, path_file_words_from_3, path_file_words_from_4, \
-    path_file_words_from_5, BG_COLOR, WHITE, FONT_TEXT_RULES, FONT_NAME_SET
+    path_file_words_from_5, BG_COLOR, WHITE, WIDTH_WINDOW_GAME, HEIGHT_WINDOW_GAME, STILE_FONT
+
 
 # from os import system
 # import pyttsx3
@@ -51,12 +52,11 @@ def create_line(string: str, num: int = 24) -> str:
     на новую строку если они превышают кол-во эл-тов в строке."""
     list_string = string.split()
     new_string = f'{list_string[0].capitalize()} {" ".join(list_string[1:])}'
-    mult = 1
-    while len(new_string) > num:
-        index_end_spase = new_string[:num].rfind(' ')
+    number_enter = num
+    while len(new_string) > number_enter:
+        index_end_spase = new_string[:number_enter].rfind(' ')
         new_string = f"{new_string[:index_end_spase]}\n{new_string[index_end_spase + 1:]}"
-        mult += 1
-        num *= mult
+        number_enter += num
     return new_string
 
 
@@ -66,19 +66,22 @@ words_from_4 = cycle(create_iter_words_list(path_file_words_from_4))
 words_from_5 = cycle(create_iter_words_list(path_file_words_from_5))
 
 
-def open_win_rules_game(width_window_rules: int = 1920, height_window_rules: int = 1080,
-                        name_list: str = "Правила игры", name_file_txt: str = path_file_rules,
-                        font_text_rules=FONT_TEXT_RULES):
+def open_win_rules_game(master, width_window_rules: int = WIDTH_WINDOW_GAME,
+                        height_window_rules: int = HEIGHT_WINDOW_GAME,
+                        name_list: str = "Правила игры", name_file_txt: str = path_file_rules):
     """Функция для создания окна с правилами игры или другим текстом.
     В качества аргументов можно предать размеры окна,
     название окна - заглавие и не посредственно путь к файлу txt откуда непосредственно будет взять текст."""
-    rules_win = Toplevel()
+    rules_win = Toplevel(master)
     rules_win.config(padx=0, pady=0, bg=BG_COLOR)  # Устанавливаем отступ от границ
-    rules_win.wm_attributes('-topmost', 1)  # окно будет поверх других
+    # rules_win.wm_attributes('-topmost', 1)  # окно будет поверх других
     rules_win.title(name_list)
     rules_win.geometry(f'{width_window_rules}x{height_window_rules}')
     # self.rules_win.protocol('WM_DELETE_WINDOW',
-    #                           self.close_win_rules)  # активирует окно уточнения на закрытие окна настроек
+    #                           self.close_win_rules)  # активирует окно уточнения на закрытие окна
+
+    font_text_rules = (STILE_FONT, int(18 * width_window_rules / 1980))
+    font_name_set = (STILE_FONT, int(22 * width_window_rules / 1980), 'bold')
 
     # СОЗДАЁМ ПОЛОСЫ ПРОКРУТКИ
     rules_frame = Frame(rules_win)
@@ -90,6 +93,7 @@ def open_win_rules_game(width_window_rules: int = 1920, height_window_rules: int
 
     # 3 Создаём Холст
     rules_canvas = Canvas(rules_frame, bg=BG_COLOR)
+    rules_canvas.bind_all("<MouseWheel>", lambda x: on_mousewheel_rul(x))
     rules_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
     # 4 Добавляем полосу прокрутки на холст
@@ -111,9 +115,8 @@ def open_win_rules_game(width_window_rules: int = 1920, height_window_rules: int
     rules_canvas.create_window((0, 0), window=second_frame_rules, anchor="nw")
 
     # Размещаем текст правил
-
     label_name_rules = Label(second_frame_rules, text=name_list, bg=BG_COLOR, fg=WHITE,
-                             font=FONT_NAME_SET)
+                             font=font_name_set)
     label_name_rules.grid(row=0, column=0, sticky=W, padx=10, pady=10)
 
     with open(name_file_txt, 'r', encoding='utf-8') as file_txt:
@@ -122,4 +125,10 @@ def open_win_rules_game(width_window_rules: int = 1920, height_window_rules: int
                              justify=LEFT, wraplength=width_window_rules * 0.95)
     label_name_rules.grid(row=1, column=0, sticky=W, padx=10, pady=10)
 
-    rules_win.mainloop()
+    def on_mousewheel_rul(event):
+        """Функция для прокручивания окна колёсиком мыши, а не бегунком справа."""
+        try:
+            rules_canvas.yview_scroll(-1 * int(event.delta / 120), "units")
+        except TclError:
+            rules_canvas.unbind_all("<MouseWheel>")
+
