@@ -1,21 +1,27 @@
-from all_setting_game import path_file_words_from_3, path_file_words_from_4, path_file_words_from_5
 from re import sub
+
+f1 = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_3.txt'
+f2 = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_4.txt'
+f3 = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_5.txt'
+f_all = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_cards.txt'
 
 
 # Проверка на дубли и повторение слов
+def give_list(name):
+    with open(name, 'r', encoding='utf-8') as file_txt:
+        return [i.lower() for i in file_txt.readline().split(', ')]
+
+
+def open_file(name):
+    with open(name, 'r', encoding='utf-8') as file_txt:
+        return [i for i in file_txt.readline().split(', ')]
+
+
 def checking_duplicates():
     """Функция не применяется в проекте(игре).
     Это вспомогательная функция для проверки наличия дублей в файлах для карточек 3,4 и 5.
     Удаление дублей лучше производить вручную."""
     print("Проверка на дубли и повторение слов")
-
-    f1 = path_file_words_from_3
-    f2 = path_file_words_from_4
-    f3 = path_file_words_from_5
-
-    def give_list(name):
-        with open(name, 'r', encoding='utf-8') as file_txt:
-            return [i.lower() for i in file_txt.readline().split(', ')]
 
     l1, l2, l3 = give_list(f1), give_list(f2), give_list(f3)
 
@@ -45,7 +51,3 @@ def deleting_characters(string: str = "112 sadd dfdf 21 dfheif 12,23 12") -> lis
     На выходе получаем список со словами для дальнейшего распределения по карточкам заданий 3,4 и 5. """
     return sub(r'[^\w\s]+|[\d]+', r'', string).strip().split()
 
-
-checking_duplicates()
-list_words = deleting_characters()
-print(list_words)
