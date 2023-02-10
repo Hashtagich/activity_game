@@ -5,7 +5,7 @@ from tkinter import colorchooser, messagebox
 from all_setting_game import *
 from common_func import *
 
-
+#
 # from screeninfo import get_monitors
 # monitor_parameters = get_monitors()[0]
 # width_monitor = monitor_parameters.width
