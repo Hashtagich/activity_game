@@ -67,23 +67,25 @@ class StartMenu:
 
         self.rules_game = Button(text='Правила', font=self.PARAMETERS_FONT_BUTTON_MENU, highlightthickness=0, width=12,
                                  activebackground=YELLOW, relief=RAISED,
-                                 command=lambda: open_win_rules_game(self.window, width_window_rules=WIDTH_WINDOW_GAME,
-                                                                     height_window_rules=HEIGHT_WINDOW_GAME))
+                                 command=lambda: open_win_rules_or_task(self.window,
+                                                                        width_window_rules=WIDTH_WINDOW_GAME,
+                                                                        height_window_rules=HEIGHT_WINDOW_GAME,
+                                                                        name_list="Правила игры",
+                                                                        name_file_txt=path_file_control))
 
         self.control_game = Button(text='Управление', font=self.PARAMETERS_FONT_BUTTON_MENU, highlightthickness=0,
                                    width=12, activebackground=YELLOW, relief=RAISED,
-                                   command=lambda: open_win_rules_game(self.window,
-                                                                       width_window_rules=WIDTH_WINDOW_GAME,
-                                                                       height_window_rules=HEIGHT_WINDOW_GAME,
-                                                                       name_list="Управление игры",
-                                                                       name_file_txt=path_file_control))  # bg=BG_COLOR
+                                   command=lambda: open_win_rules_or_task(self.window,
+                                                                          width_window_rules=WIDTH_WINDOW_GAME,
+                                                                          height_window_rules=HEIGHT_WINDOW_GAME,
+                                                                          name_list="Управление игры",
+                                                                          name_file_txt=path_file_control))  # bg=BG_COLOR
 
         self.about = Button(text='Об игре', font=self.PARAMETERS_FONT_BUTTON_MENU, highlightthickness=0,
                             width=12, activebackground=YELLOW, relief=RAISED,
-                            command=lambda: open_win_rules_game(self.window, width_window_rules=WIDTH_WINDOW_GAME,
-                                                                height_window_rules=HEIGHT_WINDOW_GAME,
-                                                                name_list="Об игре",
-                                                                name_file_txt=path_file_about))  # bg=BG_COLOR
+                            command=lambda: open_win_rules_or_task(self.window, width_window_rules=WIDTH_WINDOW_GAME,
+                                                                   height_window_rules=HEIGHT_WINDOW_GAME,
+                                                                   name_list="Об игре", name_file_txt=path_file_about))  # bg=BG_COLOR
 
         self.exit_game = Button(text='Выход', font=self.PARAMETERS_FONT_BUTTON_MENU, highlightthickness=0, width=12,
                                 command=self.close_win_menu, activebackground=YELLOW, relief=RAISED)  # bg=BG_COLOR
@@ -177,23 +179,23 @@ class SettingMenu:
         self.label_screen_resolution = Label(self.window_setting, text="Разрешение экрана", bg=BG_COLOR, fg=YELLOW,
                                              font=self.FONT_NAME_SET)
 
-        self.box_screen_resolution = ttk.Combobox(self.window_setting, values=SCREEN_SETTINGS, state="readonly",
+        self.box_screen_resolution = ttk.Combobox(self.window_setting, values=TUPLE_SCREEN_SETTINGS, state="readonly",
                                                   font=self.FONT_BUTTON_SETTING)
 
         self.label_count_team = Label(self.window_setting, text="Количество команд", bg=BG_COLOR, fg=YELLOW,
                                       font=self.FONT_NAME_SET)
 
-        self.box_count_team = ttk.Combobox(self.window_setting, values=EL_LIST, state="readonly",
+        self.box_count_team = ttk.Combobox(self.window_setting, values=TUPLE_EL, state="readonly",
                                            font=self.FONT_BUTTON_SETTING)
 
         self.label_choice_map = Label(self.window_setting, text="Выбор карты", bg=BG_COLOR, fg=YELLOW,
                                       font=self.FONT_NAME_SET)
-        self.box_choice_map = ttk.Combobox(self.window_setting, values=MAP_LIST, state="readonly",
+        self.box_choice_map = ttk.Combobox(self.window_setting, values=TUPLE_MAP, state="readonly",
                                            font=self.FONT_BUTTON_SETTING)
 
         self.label_time_round = Label(self.window_setting, text="Время на раунд (мин.)", bg=BG_COLOR, fg=YELLOW,
                                       font=self.FONT_NAME_SET)
-        self.box_time_round = ttk.Combobox(self.window_setting, values=TIME_LIST, state="readonly",
+        self.box_time_round = ttk.Combobox(self.window_setting, values=TUPLE_TIME, state="readonly",
                                            font=self.FONT_BUTTON_SETTING)
 
         self.canvas_fig = Canvas(self.window_setting, width=self.width_win_setting, height=self.height_canvas_setting,
@@ -285,7 +287,7 @@ class SettingMenu:
         """Функция берёт значение из списка выбора карты и задаёт глобальной переменной STANDARD_CARD bool значение"""
         global STANDARD_CARD
         try:
-            STANDARD_CARD = True if self.box_choice_map.get() == MAP_LIST[0] else False
+            STANDARD_CARD = True if self.box_choice_map.get() == TUPLE_MAP[0] else False
         except AttributeError:
             STANDARD_CARD = False
 
@@ -386,6 +388,7 @@ class SettingMenu:
 class GameWindow:
     def __init__(self, master, game_width_window_game=WIDTH_WINDOW_GAME, game_height_window_game=HEIGHT_WINDOW_GAME):
         number_field = 0
+        self.dict_tasks = {}
         # Для окна игры
         self.window_game = Toplevel(master)
         self.window_game.title(NAME_GAME)
@@ -456,15 +459,16 @@ class GameWindow:
         self.main_menu.add_command(label='Дополнительные настройки',
                                    command=self.push_set_command)  # , command=self.open_win_setting_game
         self.main_menu.add_command(label='Правила игры',
-                                   command=lambda: open_win_rules_game(self.window_game,
-                                                                       width_window_rules=self.width_window_game,
-                                                                       height_window_rules=self.height_window_game))
+                                   command=lambda: open_win_rules_or_task(self.window_game,
+                                                                          width_window_rules=self.width_window_game,
+                                                                          height_window_rules=self.height_window_game,
+                                                                          name_file_txt=path_file_rules))
         self.main_menu.add_command(label='Управление',
-                                   command=lambda: open_win_rules_game(self.window_game,
-                                                                       width_window_rules=self.width_window_game,
-                                                                       height_window_rules=self.height_window_game,
-                                                                       name_list="Управление игры",
-                                                                       name_file_txt=path_file_control))
+                                   command=lambda: open_win_rules_or_task(self.window_game,
+                                                                          width_window_rules=self.width_window_game,
+                                                                          height_window_rules=self.height_window_game,
+                                                                          name_list="Управление игры",
+                                                                          name_file_txt=path_file_control))
 
         # CОЗДАЁМ ПОЛОСЫ ПРОКРУТКИ НА СЛУЧАЙ ЕСЛИ РАЗРЕШЕНИЕ ЭКРАНА БУДЕН НЕ fullHD
         # 1 Создаём основной фрейм
@@ -679,12 +683,12 @@ class GameWindow:
                                                fill=self.DICT_ACTIONS[key][1], outline=BLACK,
                                                width=WIDTH_RECTANGLE_LINE)
 
-            self.canvas_cards.create_rectangle(10 + self.size_rectangle_card,
-                                               self.y_line_card + self.y_line_card_step * num_line_card,
-                                               self.width_field_card - 10,
-                                               self.y_line_card + self.y_line_card_step * num_line_card + self.size_rectangle_card,
-                                               fill=WHITE, outline=BLACK,
-                                               width=WIDTH_RECTANGLE_LINE)
+            self.line_task = self.canvas_cards.create_rectangle(10 + self.size_rectangle_card,
+                                                                self.y_line_card + self.y_line_card_step * num_line_card,
+                                                                self.width_field_card - 10,
+                                                                self.y_line_card + self.y_line_card_step * num_line_card + self.size_rectangle_card,
+                                                                fill=WHITE, outline=BLACK,
+                                                                width=WIDTH_RECTANGLE_LINE)
 
             self.canvas_cards.create_image(10 + int(self.size_rectangle_card / 2),
                                            self.y_line_card + self.y_line_card_step * num_line_card + int(
@@ -695,7 +699,87 @@ class GameWindow:
                                                             4 + self.y_line_card + self.y_line_card_step * num_line_card,
                                                             text='', justify=LEFT, fill=BLACK,
                                                             font=self.PARAMETERS_FONT_LABEL_LINE_CARD, anchor=NW)
+
             self.label_list.append(self.label_line)
+
+            self.dict_tasks[num_line_card] = self.dict_tasks.get(num_line_card, []) + [self.line_task]
+
+            self.line_tasks_but = self.canvas_cards.tag_bind(self.dict_tasks[num_line_card],
+                                                             "<Button-1>",
+                                                             lambda x: open_win_rules_or_task(self.window_game,
+                                                                                              width_window_rules=self.width_window_game,
+                                                                                              height_window_rules=self.height_window_game,
+                                                                                              name_list="Задание",
+                                                                                              name_file_txt=self.canvas_cards.itemcget(
+                                                                                                  self.label_list[
+                                                                                                      num_line_card],
+                                                                                                  'text')))
+
+        self.canvas_cards.tag_bind(self.dict_tasks[0],
+                                   "<Button-1>",
+                                   lambda x: open_win_rules_or_task(self.window_game,
+                                                                    width_window_rules=self.width_window_game,
+                                                                    height_window_rules=self.height_window_game,
+                                                                    color_text=self.canvas_cards.itemcget(
+                                                                        self.label_list[0], 'fill'),
+                                                                    name_list=f"Задание ({TUPLE_ACTION[0]})",
+                                                                    name_file_txt=self.canvas_cards.itemcget(
+                                                                        self.label_list[0], 'text')))
+
+        self.canvas_cards.tag_bind(self.dict_tasks[1],
+                                   "<Button-1>",
+                                   lambda x: open_win_rules_or_task(self.window_game,
+                                                                    width_window_rules=self.width_window_game,
+                                                                    height_window_rules=self.height_window_game,
+                                                                    color_text=self.canvas_cards.itemcget(
+                                                                        self.label_list[1], 'fill'),
+                                                                    name_list=f"Задание ({TUPLE_ACTION[1]})",
+                                                                    name_file_txt=self.canvas_cards.itemcget(
+                                                                        self.label_list[1], 'text')))
+
+        self.canvas_cards.tag_bind(self.dict_tasks[2],
+                                   "<Button-1>",
+                                   lambda x: open_win_rules_or_task(self.window_game,
+                                                                    width_window_rules=self.width_window_game,
+                                                                    height_window_rules=self.height_window_game,
+                                                                    color_text=self.canvas_cards.itemcget(
+                                                                        self.label_list[2], 'fill'),
+                                                                    name_list=f"Задание ({TUPLE_ACTION[2]})",
+                                                                    name_file_txt=self.canvas_cards.itemcget(
+                                                                        self.label_list[2], 'text')))
+
+        self.canvas_cards.tag_bind(self.dict_tasks[3],
+                                   "<Button-1>",
+                                   lambda x: open_win_rules_or_task(self.window_game,
+                                                                    width_window_rules=self.width_window_game,
+                                                                    height_window_rules=self.height_window_game,
+                                                                    color_text=self.canvas_cards.itemcget(
+                                                                        self.label_list[3], 'fill'),
+                                                                    name_list=f"Задание ({TUPLE_ACTION[3]})",
+                                                                    name_file_txt=self.canvas_cards.itemcget(
+                                                                        self.label_list[3], 'text')))
+
+        self.canvas_cards.tag_bind(self.dict_tasks[4],
+                                   "<Button-1>",
+                                   lambda x: open_win_rules_or_task(self.window_game,
+                                                                    width_window_rules=self.width_window_game,
+                                                                    height_window_rules=self.height_window_game,
+                                                                    color_text=self.canvas_cards.itemcget(
+                                                                        self.label_list[4], 'fill'),
+                                                                    name_list=f"Задание ({TUPLE_ACTION[4]})",
+                                                                    name_file_txt=self.canvas_cards.itemcget(
+                                                                        self.label_list[4], 'text')))
+
+        self.canvas_cards.tag_bind(self.dict_tasks[5],
+                                   "<Button-1>",
+                                   lambda x: open_win_rules_or_task(self.window_game,
+                                                                    width_window_rules=self.width_window_game,
+                                                                    height_window_rules=self.height_window_game,
+                                                                    color_text=self.canvas_cards.itemcget(
+                                                                        self.label_list[5], 'fill'),
+                                                                    name_list=f"Задание ({TUPLE_ACTION[5]})",
+                                                                    name_file_txt=self.canvas_cards.itemcget(
+                                                                        self.label_list[5], 'text')))
 
         self.canvas_cards.grid(row=1, column=3, pady=0, padx=0)
         # self.my_canvas.bind_all("<MouseWheel>", self.on_mousewheel)
@@ -899,7 +983,7 @@ class SetCommand:
 
         self.label_time_round = Label(self.window_setting, text="Время на раунд (мин.)", bg=BG_COLOR, fg=YELLOW,
                                       font=self.FONT_NAME_SET)
-        self.box_time_round = ttk.Combobox(self.window_setting, values=TIME_LIST, state="readonly",
+        self.box_time_round = ttk.Combobox(self.window_setting, values=TUPLE_TIME, state="readonly",
                                            font=self.FONT_BUTTON_SETTING)
 
         self.canvas_fig.grid(row=6, column=0, sticky=W, padx=0, pady=0, columnspan=2)

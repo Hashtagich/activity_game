@@ -17,11 +17,13 @@ INDENT_LINE_TEAM = 1
 COUNT_CAGE_IN_LINE = 5
 COUNT_CAGE_IN_LINE_1 = COUNT_CAGE_IN_LINE - 1
 poly_dict, poly_dict_set = {}, {}
+TUPLE_ACTION = ("Нарисовать", "Объяснить словами", "Показать жестами",
+                "Нарисовать", "Объяснить словами", "Показать жестами")
 STILE_FONT = 'Times new roman'  # Общий стиль шрифта в игре
-EL_LIST = ('2', '3', '4', '5', '6')
-MAP_LIST = ('Стандартная', 'Случайная')
-TIME_LIST = ('0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5',
-             '5')  # tuple(map(lambda x: str(int(x * 0.5) if str(x * 0.5)[-1] != '5' else x * 0.5), range(1, 11)))
+TUPLE_EL = ('2', '3', '4', '5', '6')
+TUPLE_MAP = ('Стандартная', 'Случайная')
+TUPLE_TIME = ('0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5',
+              '5')  # tuple(map(lambda x: str(int(x * 0.5) if str(x * 0.5)[-1] != '5' else x * 0.5), range(1, 11)))
 
 # Timer
 TIMER_MILLISECONDS = 1000  # микросекунды
@@ -97,7 +99,7 @@ dict_path_image = {
     '800x600': (f'{directory_images}речь24.png', f'{directory_images}мим24.png', f'{directory_images}рисовать24.png'),
 }
 
-SCREEN_SETTINGS = tuple(map(str, dict_path_image.keys()))
+TUPLE_SCREEN_SETTINGS = tuple(map(str, dict_path_image.keys()))
 
 # sounds name
 directory_sounds = 'sounds/'

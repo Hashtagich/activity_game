@@ -3,8 +3,8 @@ from random import shuffle
 from tkinter import *
 from tkinter import ttk
 
-from all_setting_game import path_file_rules, path_file_words_from_3, path_file_words_from_4, \
-    path_file_words_from_5, BG_COLOR, WHITE, WIDTH_WINDOW_GAME, HEIGHT_WINDOW_GAME, STILE_FONT
+from all_setting_game import path_file_words_from_3, path_file_words_from_4, path_file_words_from_5, \
+    BG_COLOR, BLACK, WHITE, RED, WIDTH_WINDOW_GAME, HEIGHT_WINDOW_GAME, STILE_FONT
 
 
 # from os import system
@@ -66,12 +66,27 @@ words_from_4 = cycle(create_iter_words_list(path_file_words_from_4))
 words_from_5 = cycle(create_iter_words_list(path_file_words_from_5))
 
 
-def open_win_rules_game(master, width_window_rules: int = WIDTH_WINDOW_GAME,
-                        height_window_rules: int = HEIGHT_WINDOW_GAME,
-                        name_list: str = "Правила игры", name_file_txt: str = path_file_rules):
-    """Функция для создания окна с правилами игры или другим текстом.
-    В качества аргументов можно предать размеры окна,
-    название окна - заглавие и не посредственно путь к файлу txt откуда непосредственно будет взять текст."""
+def open_win_rules_or_task(master, width_window_rules: int = WIDTH_WINDOW_GAME,
+                           height_window_rules: int = HEIGHT_WINDOW_GAME, color_text: str = WHITE,
+                           name_list: str = "Название раздела", name_file_txt: str = 'Текст отсутствует'):
+    """Функция для создания окна с правилами игры или другим текстом. В качества аргументов можно предать размеры окна,
+    название окна - заглавие и не посредственно путь к файлу txt откуда непосредственно будет взят текст."""
+    if '.txt' in name_file_txt:
+        with open(name_file_txt, 'r', encoding='utf-8') as file_txt:
+            text_rules = file_txt.read()
+
+        font_text_num, font_name_num = 18, 22
+
+    else:
+        text_rules = name_file_txt
+
+        width_window_rules = int(width_window_rules * 0.7)
+        height_window_rules = int(height_window_rules * 0.7)
+
+        font_text_num, font_name_num = 96, 72
+        color_text = WHITE if color_text == BLACK else color_text
+        name_list = name_list.replace("(", "для всех!!! (") if color_text == RED else name_list
+
     rules_win = Toplevel(master)
     rules_win.config(padx=0, pady=0, bg=BG_COLOR)  # Устанавливаем отступ от границ
     # rules_win.wm_attributes('-topmost', 1)  # окно будет поверх других
@@ -80,8 +95,8 @@ def open_win_rules_game(master, width_window_rules: int = WIDTH_WINDOW_GAME,
     # self.rules_win.protocol('WM_DELETE_WINDOW',
     #                           self.close_win_rules)  # активирует окно уточнения на закрытие окна
 
-    font_text_rules = (STILE_FONT, int(18 * width_window_rules / 1980))
-    font_name_set = (STILE_FONT, int(22 * width_window_rules / 1980), 'bold')
+    font_name_set = (STILE_FONT, int(font_name_num * width_window_rules / 1980), 'bold')
+    font_text_rules = (STILE_FONT, int(font_text_num * width_window_rules / 1980))
 
     # СОЗДАЁМ ПОЛОСЫ ПРОКРУТКИ
     rules_frame = Frame(rules_win)
@@ -114,14 +129,12 @@ def open_win_rules_game(master, width_window_rules: int = WIDTH_WINDOW_GAME,
     # 7 Добавляем эту Новую Рамку в окно на Холсте
     rules_canvas.create_window((0, 0), window=second_frame_rules, anchor="nw")
 
-    # Размещаем текст правил
+    # Размещаем текст
     label_name_rules = Label(second_frame_rules, text=name_list, bg=BG_COLOR, fg=WHITE,
                              font=font_name_set)
     label_name_rules.grid(row=0, column=0, sticky=W, padx=10, pady=10)
 
-    with open(name_file_txt, 'r', encoding='utf-8') as file_txt:
-        text_rules = file_txt.read()
-    label_name_rules = Label(second_frame_rules, text=text_rules, bg=BG_COLOR, fg=WHITE, font=font_text_rules,
+    label_name_rules = Label(second_frame_rules, text=text_rules, bg=BG_COLOR, fg=color_text, font=font_text_rules,
                              justify=LEFT, wraplength=width_window_rules * 0.95)
     label_name_rules.grid(row=1, column=0, sticky=W, padx=10, pady=10)
 
@@ -131,4 +144,3 @@ def open_win_rules_game(master, width_window_rules: int = WIDTH_WINDOW_GAME,
             rules_canvas.yview_scroll(-1 * int(event.delta / 120), "units")
         except TclError:
             rules_canvas.unbind_all("<MouseWheel>")
-
