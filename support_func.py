@@ -1,9 +1,9 @@
 from re import sub
 
-f1 = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_3.txt'
-f2 = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_4.txt'
-f3 = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_5.txt'
-f_all = 'D:/clone_projct_from_github/activity_game/txt_files/words_from_cards.txt'
+f1 = 'txt_files/words_from_3.txt'
+f2 = 'txt_files/words_from_4.txt'
+f3 = 'txt_files/words_from_5.txt'
+f_all = 'txt_files/words_from_cards.txt'
 
 
 # Проверка на дубли и повторение слов
@@ -51,3 +51,15 @@ def deleting_characters(string: str = "112 sadd dfdf 21 dfheif 12,23 12") -> lis
     На выходе получаем список со словами для дальнейшего распределения по карточкам заданий 3,4 и 5. """
     return sub(r'[^\w\s]+|[\d]+', r'', string).strip().split()
 
+
+def del_duplicates(fun_list: str) -> list:
+    """Функция удаляет дубли из переданного файла."""
+    list_1 = give_list(fun_list)
+
+    if len(list_1) == len(set(list_1)):
+        print("Повторов не обнаружено.")
+        result = list_1
+    else:
+        print(f"Обнаружены дубли в кол-ве {len(list_1) - len(set(list_1))} шт.\nДубли удалены!\nВнимание!!! Все слова в нижнем регистре.")
+        result = list(set(list_1))
+    return result
